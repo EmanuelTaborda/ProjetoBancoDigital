@@ -1,8 +1,10 @@
-public interface ContaModel {
+public interface IConta {
 
     void sacar(double valor);
 
     void depositar (double valor);
 
-    void transferirValor (double valor, ContaModel contaDestino);
+    void transferirValor (double valor, IConta contaDestino);
+
+    void imprimirExtrato();
 }
