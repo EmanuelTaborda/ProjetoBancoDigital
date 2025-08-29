@@ -38,10 +38,8 @@ public abstract class Conta implements IConta {
             System.out.println("Transferência realizada com sucesso.");
             saldo -= valor;
             contaDestino.depositar(valor);
-            return;
         }else {
             System.out.println("Valor insuficiente para transferir.");
-            return;
         }
 
     }
