@@ -7,10 +7,12 @@ public class Main {
 
         cc.depositar(250);
 
-        cc.imprimirExtrato();
-
         cc.sacar(100);
 
-        cc.imprimirExtrato();
+        Cliente thayna = new Cliente("Thayná");
+
+        ContaPoupanca cp = new ContaPoupanca(thayna);
+
+        cc.transferirValor(100, cp);
     }
 }

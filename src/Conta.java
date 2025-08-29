@@ -29,14 +29,21 @@ public abstract class Conta implements IConta {
     @Override
     public void depositar(double valor) {
         saldo += valor;
-        System.out.printf("R$%.2f depositado com sucesso.\n" +
-                "O saldo atual é de R$%.2f\n", valor, getSaldo());
+        System.out.printf("R$%.2f depositado com sucesso na conta de %s.\n", getSaldo(), getCliente());
     }
 
     @Override
     public void transferirValor(double valor, IConta contaDestino) {
-        this.sacar(valor);
-        contaDestino.depositar(valor);
+        if (getSaldo()>valor) {
+            System.out.println("Transferência realizada com sucesso.");
+            saldo -= valor;
+            contaDestino.depositar(valor);
+            return;
+        }else {
+            System.out.println("Valor insuficiente para transferir.");
+            return;
+        }
+
     }
 
     public int getAgencia() {
@@ -49,6 +56,10 @@ public abstract class Conta implements IConta {
 
     public double getSaldo() {
         return saldo;
+    }
+
+    public String getCliente() {
+        return cliente.getNome();
     }
 
     protected void imprimirInfosComuns() {
