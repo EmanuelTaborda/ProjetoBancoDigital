@@ -29,6 +29,8 @@ public abstract class Conta implements IConta {
     @Override
     public void depositar(double valor) {
         saldo += valor;
+        System.out.printf("R$%.2f depositado com sucesso.\n" +
+                "O saldo atual é de R$%.2f\n", valor, getSaldo());
     }
 
     @Override
