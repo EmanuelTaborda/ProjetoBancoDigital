@@ -18,7 +18,6 @@ public abstract class Conta implements IConta {
     public void sacar(double valor) {
         if (getSaldo()<valor) {
             System.out.println("Saldo insuficiente para sacar!");
-            return;
         } else {
             saldo -= valor;
             System.out.println("Saque realizado com sucesso.");
