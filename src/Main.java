@@ -14,5 +14,10 @@ public class Main {
         ContaPoupanca cp = new ContaPoupanca(thayna);
 
         cc.transferirValor(100, cp);
+
+        cp.imprimirExtrato();
+
+        cc.imprimirExtrato();
+
     }
 }
