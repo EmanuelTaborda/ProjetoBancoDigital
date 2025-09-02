@@ -23,11 +23,23 @@ jobs:
       - name: Compilar projeto
         run: javac -d out $(find src -name "*.java")
 
+      - name: Salvar artefatos compilados
+        uses: actions/upload-artifact@v4
+        with:
+          name: arquivos-compilados
+          path: out/
+
   deploy:
     runs-on: ubuntu-latest
     needs: build
     if: github.ref == 'refs/heads/main'
     steps:
+      - name: Baixar artefatos compilados
+        uses: actions/download-artifact@v4
+        with:
+          name: arquivos-compilados
+          path: out/
+
       - name: Simular Deploy
         run: |
           echo "Iniciando deploy..."
