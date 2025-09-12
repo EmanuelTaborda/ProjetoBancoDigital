@@ -46,3 +46,20 @@ jobs:
           mkdir -p deploy
           cp -r out/* deploy/
           echo "Deploy realizado com sucesso!"
+
+  notify:
+    runs-on: ubuntu-latest
+    needs: [build, deploy]
+    if: always() # Executa mesmo se outros jobs falharem
+    steps:
+      - name: Notificar Discord
+        uses: Ilshidur/action-discord@0.3.1
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        with:
+          args: |
+            {
+              "username": "GitHub Actions",
+              "avatar_url": "https://github.com/github.png",
+              "content": "🚀 **CI/CD Status**\nRepositório: ${{ github.repository }}\nBranch: ${{ github.ref }}\nAutor: ${{ github.actor }}\nStatus: ${{ job.status }}\nDetalhes: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+            }
