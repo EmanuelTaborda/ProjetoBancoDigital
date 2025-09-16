@@ -29,9 +29,41 @@ jobs:
           name: arquivos-compilados
           path: out/
 
-  deploy:
+  test:
     runs-on: ubuntu-latest
     needs: build
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download compiled classes
+        uses: actions/download-artifact@v4
+        with:
+          name: arquivos-compilados
+          path: out/
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Download JUnit standalone JAR
+        run: |
+          curl -L -o junit.jar https://repo1.maven.org/maven2/org/junit/platform/junit-platform-console-standalone/1.9.3/junit-platform-console-standalone-1.9.3.jar
+
+      - name: Compile test classes
+        run: |
+          mkdir -p test-out
+          javac -d test-out -cp out:junit.jar test/*.java
+
+      - name: Run tests
+        run: |
+          java -jar junit.jar -cp out:test-out --scan-class-path --include-classname=".*Test"
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [build, test]
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Baixar artefatos compilados
@@ -46,20 +78,3 @@ jobs:
           mkdir -p deploy
           cp -r out/* deploy/
           echo "Deploy realizado com sucesso!"
-
-  notify:
-    runs-on: ubuntu-latest
-    needs: [build, deploy]
-    if: always() # Executa mesmo se outros jobs falharem
-    steps:
-      - name: Notificar Discord
-        uses: Ilshidur/action-discord@0.3.1
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
-        with:
-          args: |
-            {
-              "username": "GitHub Actions",
-              "avatar_url": "https://github.com/github.png",
-              "content": "🚀 **CI/CD Status**\nRepositório: ${{ github.repository }}\nBranch: ${{ github.ref }}\nAutor: ${{ github.actor }}\nStatus: ${{ job.status }}\nDetalhes: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-            }
